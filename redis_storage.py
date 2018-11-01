@@ -195,7 +195,7 @@ redis_db = 5
 
 
 def redis_storage():
-    return storage('redis', flush_db=True, host=redis_host, port=redis_port, db=redis_db)
+    return storage('redis', flush_db=False, host=redis_host, port=redis_port, db=redis_db)
 
 
 store=redis_storage()
