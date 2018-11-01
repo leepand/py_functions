@@ -151,11 +151,10 @@ def prepender(func):
         return func(self, prepended, *args[1:])
     return prepend
 
-
+pre='dddd'
 class Terms(object):
     def __init__(self, store=None):
         self._items = store
-
     @property
     def terms(self):
         """
@@ -165,8 +164,12 @@ class Terms(object):
 
 
 class OriginalTerms(Terms):
-    _prefix = 't:'  # this prefix stands for `term:`
+    #_prefix = pre#'t:'  # this prefix stands for `term:`
 
+    def __init__(self, store, pre='tre'):
+        self._prefix = pre
+        _prefix = self._prefix
+        super(OriginalTerms, self).__init__(store)
     @prepender
     def __setitem__(self, word, count):
         """
@@ -183,6 +186,8 @@ class OriginalTerms(Terms):
         print word
         return self._items[word] if word in self._items else 0
 
+
+
 ###test:
 redis_host = 'localhost'
 redis_port = 6379
@@ -194,7 +199,7 @@ def redis_storage():
 
 
 store=redis_storage()
-oi = OriginalTerms(store)
+oi = OriginalTerms(store,'ddd')
 oi['foo']=1
 
 r = redis.StrictRedis(db=redis_db)
