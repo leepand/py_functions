@@ -9,3 +9,9 @@ text = url.read()
 ip = re.findall(r'\d+.\d+.\d+.\d+',text)
 
 print ip[0]
+
+#
+
+#curl -s http://txt.go.sohu.com/ip/soip  | awk '{t=$0;gsub(/.*sohu_user_ip="|";.*/,"",t);print t}'
+#https://kinggoo.com/ob-ip.htm
+
