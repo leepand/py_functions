@@ -26,6 +26,39 @@ def list_all(root, filter_func=lambda x: True, full_path=False):
         raise Exception("Invalid parent directory '%s'" % root)
     matches = [x for x in os.listdir(root) if filter_func(os.path.join(root, x))]
     return [os.path.join(root, m) for m in matches] if full_path else matches
+def list_subdirs(dir_name, full_path=False):
+    """
+    Equivalent to UNIX command:
+      ``find $dir_name -depth 1 -type d``
+    :param dir_name: Name of directory to start search
+    :param full_path: If True will return results as full path including `root`
+    :return: list of all directories directly under 'dir_name'
+    """
+    return list_all(dir_name, os.path.isdir, full_path)
+
+
+def list_files(dir_name, full_path=False):
+    """
+    Equivalent to UNIX command:
+      ``find $dir_name -depth 1 -type f``
+    :param dir_name: Name of directory to start search
+    :param full_path: If True will return results as full path including `root`
+    :return: list of all files directly under 'dir_name'
+    """
+    return list_all(dir_name, os.path.isfile, full_path)
+
+
+def find(root, name, full_path=False):
+    """
+    Search for a file in a root directory. Equivalent to:
+      ``find $root -name "$name" -depth 1``
+    :param root: Name of root directory for find
+    :param name: Name of file or directory to find directly under root directory
+    :param full_path: If True will return results as full path including `root`
+    :return: list of matching files or directories
+    """
+    path_name = os.path.join(root, name)
+    return list_all(root, lambda x: x == path_name, full_path)
 
 def mkdir(root, name=None):
     """
@@ -46,3 +79,4 @@ mkdir("tmp","aah2")
 is_directory("tmp/aah2")
 exists("tmp/aah2")
 list_all("tmp",full_path=True)
+find("tmp","aah",full_path=True)
