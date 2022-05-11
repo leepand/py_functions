@@ -11,6 +11,10 @@ def is_directory(name):
 def is_file(name):
     return os.path.isfile(name)
 
+def exists(name):
+    return os.path.exists(name)
+
+
 def mkdir(root, name=None):
     """
     Make directory with name "root/name", or just "root" if name is None.
@@ -28,3 +32,4 @@ def mkdir(root, name=None):
 
 mkdir("tmp","aah2")
 is_directory("tmp/aah2")
+exists("tmp/aah2")
