@@ -14,6 +14,18 @@ def is_file(name):
 def exists(name):
     return os.path.exists(name)
 
+def list_all(root, filter_func=lambda x: True, full_path=False):
+    """
+    List all entities directly under 'dir_name' that satisfy 'filter_func'
+    :param root: Name of directory to start search
+    :param filter_func: function or lambda that takes path
+    :param full_path: If True will return results as full path including `root`
+    :return: list of all files or directories that satisfy the criteria.
+    """
+    if not is_directory(root):
+        raise Exception("Invalid parent directory '%s'" % root)
+    matches = [x for x in os.listdir(root) if filter_func(os.path.join(root, x))]
+    return [os.path.join(root, m) for m in matches] if full_path else matches
 
 def mkdir(root, name=None):
     """
@@ -33,3 +45,4 @@ def mkdir(root, name=None):
 mkdir("tmp","aah2")
 is_directory("tmp/aah2")
 exists("tmp/aah2")
+list_all("tmp",full_path=True)
