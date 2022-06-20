@@ -88,3 +88,5 @@ class RedisStorageHandler(StorageHandler):
 test = SqliteStorageHandler({},{"name":"keydb.db"})
 test.set("new",{"x":100})
 test.get("new").keys()
+
+test2 = SqliteStorageHandler(context="leepand",config={"name":"keydb.db"})
