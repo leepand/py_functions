@@ -11,8 +11,10 @@ def is_directory(name):
 def is_file(name):
     return os.path.isfile(name)
 
+
 def exists(name):
     return os.path.exists(name)
+
 
 def list_all(root, filter_func=lambda x: True, full_path=False):
     """
@@ -26,6 +28,8 @@ def list_all(root, filter_func=lambda x: True, full_path=False):
         raise Exception("Invalid parent directory '%s'" % root)
     matches = [x for x in os.listdir(root) if filter_func(os.path.join(root, x))]
     return [os.path.join(root, m) for m in matches] if full_path else matches
+
+
 def list_subdirs(dir_name, full_path=False):
     """
     Equivalent to UNIX command:
@@ -60,6 +64,7 @@ def find(root, name, full_path=False):
     path_name = os.path.join(root, name)
     return list_all(root, lambda x: x == path_name, full_path)
 
+
 def mkdir(root, name=None):
     """
     Make directory with name "root/name", or just "root" if name is None.
@@ -75,8 +80,9 @@ def mkdir(root, name=None):
             raise e
     return target
 
-mkdir("tmp","aah2")
+
+mkdir("tmp", "aah2")
 is_directory("tmp/aah2")
 exists("tmp/aah2")
-list_all("tmp",full_path=True)
-find("tmp","aah",full_path=True)
+list_all("tmp", full_path=True)
+find("tmp", "aah", full_path=True)

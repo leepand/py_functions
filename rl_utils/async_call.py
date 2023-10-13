@@ -58,14 +58,15 @@ def async_call(target: Callable, timeout: Optional[int] = None) -> Callable:
     return wrapper
 
 
-
 async_requests_get = async_call(requests.get, timeout=5)
 
 pypi_url = "https://github.com/Chanzhaoyu/chatgpt-web/blob/main/src/components/business/Chat/layout/Layout.vue"
 data, thread = async_requests_get(pypi_url, timeout=3)
 
+
 def test(x):
     return x
-d= async_call(test, timeout=5)
-d("dsdf")
 
+
+d = async_call(test, timeout=5)
+d("dsdf")

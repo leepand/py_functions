@@ -13,5 +13,5 @@ def generate_id(length: int = 8) -> str:
     alphabet = string.ascii_lowercase + string.digits
     return "".join(secrets.choice(alphabet) for _ in range(length))
 
-generate_id(21)
 
+generate_id(21)

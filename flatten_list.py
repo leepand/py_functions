@@ -1,5 +1,6 @@
-# -*- coding: UTF-8 -*- 
-#拉平多个list
+# -*- coding: UTF-8 -*-
+# 拉平多个list
+
 
 def flatten(x):
     """

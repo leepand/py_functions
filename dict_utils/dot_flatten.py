@@ -3,6 +3,7 @@ from logging import getLogger
 
 log = getLogger(__name__)
 
+
 def dot_flatten(d):
     try:
         from flatten_dict import flatten
@@ -16,4 +17,6 @@ def dot_flatten(d):
             exc_info=True,
         )
     return d
-dot_flatten({"x":{"y":0}})
+
+
+dot_flatten({"x": {"y": 0}})

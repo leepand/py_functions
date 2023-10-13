@@ -92,9 +92,9 @@ def _log(
             _logger.info(line)
     else:
         click.echo(line, file=sys.stderr, nl=newline)
-        
+
+
 termwarn("Invalid choice")
 termerror("Invalid choice")
 result = "test"
 termlog(f"You chose {result!r}")
-

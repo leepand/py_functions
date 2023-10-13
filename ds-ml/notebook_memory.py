@@ -83,5 +83,6 @@ def pre_run_cell():
     """Capture current time before we execute the current command"""
     global t1
     t1 = time.time()
-    
+
+
 pre_run_cell()

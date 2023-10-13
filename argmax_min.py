@@ -3,6 +3,7 @@ from typing import List, Tuple
 import numpy as np
 import random
 
+
 def argmax_or_min(values: List[float], find_min: bool = False) -> int:
     """Find index with the largest or smallest value
     Args:
@@ -16,10 +17,11 @@ def argmax_or_min(values: List[float], find_min: bool = False) -> int:
     indexes = [index for index, value in enumerate(values) if value == extremum]
     return np.random.choice(indexes)
 
-argmax_or_min([1,3,0,109,109])
 
-def argmax_or_min_tuple(values: List[Tuple[float, int]],
-                        find_min: bool = False) -> int:
+argmax_or_min([1, 3, 0, 109, 109])
+
+
+def argmax_or_min_tuple(values: List[Tuple[float, int]], find_min: bool = False) -> int:
     """Find the second element of the tuple with the largest or smallest value
     Args:
     values: a list of tuples
@@ -28,9 +30,13 @@ def argmax_or_min_tuple(values: List[Tuple[float, int]],
     the second element of the tuple with the largest or smallest value.
     When there is a tie, randomly output one of them.
     """
-    extremum = min([value for value, _ in values]) if find_min else max(
-        [value for value, _ in values])
+    extremum = (
+        min([value for value, _ in values])
+        if find_min
+        else max([value for value, _ in values])
+    )
     indexes = [index for (value, index) in values if value == extremum]
     return np.random.choice(indexes)
 
-argmax_or_min_tuple([(1,12),(0,3)])
+
+argmax_or_min_tuple([(1, 12), (0, 3)])

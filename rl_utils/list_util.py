@@ -7,5 +7,3 @@ def duplicate_removal(src_list):
         name_scope.add(item)
         dest_list.append(item)
     return dest_list
-
-

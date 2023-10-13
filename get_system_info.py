@@ -1,4 +1,6 @@
-import platform,distro
+import platform, distro
+
+
 def get_system_info():
     system = platform.system()
 
@@ -26,5 +28,6 @@ def get_system_info():
 
     # We don't collect data for any other system.
     return {"os": "unknown"}
+
 
 get_system_info()

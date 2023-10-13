@@ -8,18 +8,19 @@ import logging
 import os
 from functools import lru_cache
 
-from fastapi import File, UploadFile, FastAPI,Form, Depends,HTTPException
+from fastapi import File, UploadFile, FastAPI, Form, Depends, HTTPException
 from fastapi.responses import FileResponse
 
 from pydantic import BaseSettings, PostgresDsn, AnyHttpUrl
 from pydantic import BaseModel
 from mlflow.tracking import MlflowClient
 
-mlflow_client=MlflowClient(tracking_uri="http://0.0.0.0:8904")
+mlflow_client = MlflowClient(tracking_uri="http://0.0.0.0:8904")
 
 
 log = logging.getLogger("uvicorn")
 app = FastAPI()
+
 
 class Item(BaseModel):  # 定义一个类用作参数
     name: str
@@ -29,7 +30,9 @@ class Settings(BaseSettings):
     environment: str = os.getenv("ENVIRONMENT", "dev")
     testing: bool = os.getenv("TESTING", False)
     database_url: PostgresDsn = os.environ.get("DATABASE_URL")
-    filestore_dir: str = os.environ.get("FILESTORE_DIR",'/Users/leepand/Downloads/codes/mlflow')
+    filestore_dir: str = os.environ.get(
+        "FILESTORE_DIR", "/Users/leepand/Downloads/codes/mlflow"
+    )
     backend_cors_origins: List[AnyHttpUrl] = []
 
 
@@ -48,7 +51,7 @@ async def save_file(file: UploadFile, filestore: str) -> str:
     """
     try:
         async with aiofiles.open(os.path.join(filestore, file.filename), "wb") as f:
-            print(os.path.join(filestore, file.filename,"fsfdf"))
+            print(os.path.join(filestore, file.filename, "fsfdf"))
             # Read the data in chunks and save it, as we go.
             for i in iter(lambda: file.file.read(1024 * 1024 * 64), b""):
 
@@ -71,26 +74,25 @@ async def save_file(file: UploadFile, filestore: str) -> str:
 
 @app.post("/file", status_code=201)
 async def upload_file(
-    run_id: str = Form(''),
-    experiment_name: str = Form(''),
-    art_file: str = Form(''),
+    run_id: str = Form(""),
+    experiment_name: str = Form(""),
+    art_file: str = Form(""),
     file: UploadFile = File(...),
-    settings: Settings = Depends(get_settings)
+    settings: Settings = Depends(get_settings),
 ):
 
     filename = await save_file(file, settings.filestore_dir)
-    #print(filename,settings.filestore_dir,"sfff")
+    # print(filename,settings.filestore_dir,"sfff")
     run_info = mlflow_client.get_run(run_id).info
-    #art_uri = '/Users/leepand/Downloads/codes/mlflow'
-    #log_file = os.path.join(art_uri,art_file)
-    print(run_info,"sffllll",art_file,"fsf")
-    #mlflow_client.log_artifact(run_info.run_id, art_file, log_file)
-    
-    
-    #payload = UploadPayloadSchema(
+    # art_uri = '/Users/leepand/Downloads/codes/mlflow'
+    # log_file = os.path.join(art_uri,art_file)
+    print(run_info, "sffllll", art_file, "fsf")
+    # mlflow_client.log_artifact(run_info.run_id, art_file, log_file)
+
+    # payload = UploadPayloadSchema(
     #    filename=filename,
-    #)
-    #upload = await crud.post_upload(payload)
+    # )
+    # upload = await crud.post_upload(payload)
     return filename
 
 
@@ -103,30 +105,27 @@ async def upload_files(
     for file in file_list:
         filename = await save_file(file, settings.filestore_dir)
 
-
     return file_list
+
 
 @app.get("/files/{filename:path}")
 async def download_file(filename: str):
     current = Path()
     file_path = current / "files" / filename
     response = FileResponse(
-                    path=file_path,
-                    filename=f"download_{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
-                )
+        path=file_path,
+        filename=f"download_{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}",
+    )
     return response
 
 
 @app.get("/listfiles")
 async def list_files(item: Item):  # item需要与Item对象定义保持一致
     return {
-        "method": 'post',
-        "people_name": item.name,  
+        "method": "post",
+        "people_name": item.name,
     }
 
 
-
-
-if __name__ == '__main__':
-    uvicorn.run(app, host='0.0.0.0', port=8895)
-
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8895)

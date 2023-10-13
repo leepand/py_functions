@@ -17,4 +17,5 @@ def merge_dicts(source: Dict[str, Any], destination: Dict[str, Any]) -> Dict[str
                 destination[key] = value
     return destination
 
-merge_dicts({"x":10},{"xx":20})
+
+merge_dicts({"x": 10}, {"xx": 20})

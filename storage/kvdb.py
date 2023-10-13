@@ -9,13 +9,14 @@ import sqlite3
 
 
 class StorageHandler:
-    """ 
+    """
     Simple key-value store. Instances of this handler shall store any information required by other handlers.
-    Context should store anything relevant to the storage handler, e.g. CompanyID, UserID, parent handler name, among others. 
+    Context should store anything relevant to the storage handler, e.g. CompanyID, UserID, parent handler name, among others.
     """  # noqa
+
     def __init__(self, context: Dict, config=None):
-        self.config = config if config else os.getenv('MDB_STORAGE_HANDLER_CONFIG')
-        self.serializer = pickle if config.get('serializer', '') == 'pickle' else dill
+        self.config = config if config else os.getenv("MDB_STORAGE_HANDLER_CONFIG")
+        self.serializer = pickle if config.get("serializer", "") == "pickle" else dill
         self.context = self.serializer.dumps(context)  # store serialized
 
     def _get_context_key(self, key: str):
@@ -41,24 +42,33 @@ class StorageHandler:
 
 
 class SqliteStorageHandler(StorageHandler):
-    """ StorageHandler that uses SQLite as backend. """  # noqa
+    """StorageHandler that uses SQLite as backend."""  # noqa
+
     def __init__(self, context: Dict, config=None):
         super().__init__(context, config)
-        name = self.config["name"] if self.config["name"][-3:] == '.db' else self.config["name"] + '.db'
+        name = (
+            self.config["name"]
+            if self.config["name"][-3:] == ".db"
+            else self.config["name"] + ".db"
+        )
         path = os.path.join(self.config.get("path", "./"), name)
         self.connection = sqlite3.connect(path)
         self._setup_connection()
 
     def _setup_connection(self):
-        """ Checks that a key-value table exists, otherwise creates it. """  # noqa
+        """Checks that a key-value table exists, otherwise creates it."""  # noqa
         cur = self.connection.cursor()
-        if ('store',) not in list(cur.execute("SELECT name FROM sqlite_master WHERE type='table';")):
+        if ("store",) not in list(
+            cur.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        ):
             cur.execute("""create table store (key text PRIMARY KEY, value text)""")
             self.connection.commit()
 
     def _get(self, serialized_key):
         cur = self.connection.cursor()
-        results = list(cur.execute(f"""select value from store where key='{serialized_key}'"""))
+        results = list(
+            cur.execute(f"""select value from store where key='{serialized_key}'""")
+        )
         if results:
             return results[0][0]  # should always be a single match, hence the [0]s
         else:
@@ -66,27 +76,34 @@ class SqliteStorageHandler(StorageHandler):
 
     def _set(self, serialized_key, serialized_value):
         cur = self.connection.cursor()
-        cur.execute("insert or replace into store values (?, ?)", (serialized_key, serialized_value))
+        cur.execute(
+            "insert or replace into store values (?, ?)",
+            (serialized_key, serialized_value),
+        )
         self.connection.commit()
 
 
 class RedisStorageHandler(StorageHandler):
-    """ StorageHandler that uses Redis as backend. """  # noqa
+    """StorageHandler that uses Redis as backend."""  # noqa
+
     def __init__(self, context: Dict, config=None):
         super().__init__(context, config)
-        assert self.config.get('host', False)
-        assert self.config.get('port', False)
+        assert self.config.get("host", False)
+        assert self.config.get("port", False)
 
-        self.connection = redis.Redis(host=self.config['host'], port=self.config['port'])
+        self.connection = redis.Redis(
+            host=self.config["host"], port=self.config["port"]
+        )
 
     def _get(self, serialized_key):
         return self.connection.get(serialized_key)
 
     def _set(self, serialized_key, serialized_value):
         self.connection.set(serialized_key, serialized_value)
-        
-test = SqliteStorageHandler({},{"name":"keydb.db"})
-test.set("new",{"x":100})
+
+
+test = SqliteStorageHandler({}, {"name": "keydb.db"})
+test.set("new", {"x": 100})
 test.get("new").keys()
 
-test2 = SqliteStorageHandler(context="leepand",config={"name":"keydb.db"})
+test2 = SqliteStorageHandler(context="leepand", config={"name": "keydb.db"})

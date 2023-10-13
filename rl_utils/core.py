@@ -54,7 +54,9 @@ def stack_dicts(stats_dicts):
     results = dict()
     for k in stats_dicts[0]:
         stats_list = [torch.flatten(d[k]) for d in stats_dicts]
-        results[k] = pad_sequence(stats_list, batch_first=True, padding_value=WANDB_PADDING)
+        results[k] = pad_sequence(
+            stats_list, batch_first=True, padding_value=WANDB_PADDING
+        )
     return results
 
 
@@ -110,7 +112,9 @@ def average_torch_dicts(list_of_dicts):
     """Average values of a list of dicts with torch tensors."""
     average_dict = dict()
     for key in list_of_dicts[0].keys():
-        average_dict[key] = torch.mean(torch.stack([d[key] for d in list_of_dicts]), axis=0)
+        average_dict[key] = torch.mean(
+            torch.stack([d[key] for d in list_of_dicts]), axis=0
+        )
     return average_dict
 
 
@@ -136,7 +140,9 @@ def build_bert_batch_from_txt(text_list, tokenizer, device):
     """Create token id and attention mask tensors from text list for BERT classification."""
 
     # tokenize
-    tensors = [tokenizer.encode(txt, return_tensors="pt").to(device) for txt in text_list]
+    tensors = [
+        tokenizer.encode(txt, return_tensors="pt").to(device) for txt in text_list
+    ]
 
     # find max length to pad to
     max_len = max([t.size()[1] for t in tensors])
@@ -164,7 +170,9 @@ def respond_to_batch(model, queries, txt_len=20, top_k=0, top_p=1.0):
         # Get Logits
         outputs = model(input_ids)
         next_token_logits = outputs[0][:, -1, :]
-        next_token_logits = top_k_top_p_filtering(next_token_logits, top_k=top_k, top_p=top_p)
+        next_token_logits = top_k_top_p_filtering(
+            next_token_logits, top_k=top_k, top_p=top_p
+        )
         # Sample
         probs = F.softmax(next_token_logits, dim=-1)
         next_token = torch.multinomial(probs, num_samples=1).squeeze(1)
@@ -194,4 +202,3 @@ class LengthSampler:
 
     def __call__(self):
         return np.random.choice(self.values)
-

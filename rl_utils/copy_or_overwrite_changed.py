@@ -51,5 +51,5 @@ def copy_or_overwrite_changed(source_path: StrPath, target_path: StrPath) -> Str
 
     return return_type(target_path)  # type: ignore  # 'os.PathLike' is abstract.
 
-copy_or_overwrite_changed("fsync_open.txt","./fsync_open2.txt")
 
+copy_or_overwrite_changed("fsync_open.txt", "./fsync_open2.txt")

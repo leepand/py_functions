@@ -3,6 +3,7 @@ from urllib.request import pathname2url
 import os
 import sys
 
+
 def path_to_local_sqlite_uri(path):
     """
     Convert local filesystem path to sqlite uri.
@@ -11,4 +12,5 @@ def path_to_local_sqlite_uri(path):
     prefix = "sqlite://" if sys.platform == "win32" else "sqlite:///"
     return prefix + path
 
-path_to_local_sqlite_uri('x.db')
+
+path_to_local_sqlite_uri("x.db")

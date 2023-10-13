@@ -1,5 +1,5 @@
 import socket
-from typing import Optional, cast,Any,Dict
+from typing import Optional, cast, Any, Dict
 import logging
 from enum import Enum
 
@@ -7,6 +7,7 @@ from enum import Enum
 SCAN_PORT_RANGE = (8000, 65535)
 ZENML_LOGGING_VERBOSITY: str = "INFO"
 APP_NAME = "zenml"
+
 
 class CustomFormatter(logging.Formatter):
     """Formats logs according to custom specifications."""
@@ -63,6 +64,7 @@ class CustomFormatter(logging.Formatter):
 
 LOG_FILE = f"{APP_NAME}_logs.log"
 
+
 def get_console_handler() -> Any:
     """Get console handler for logging.
     Returns:
@@ -77,6 +79,7 @@ def get_console_handler() -> Any:
     # console_handler.setFormatter(CustomFormatter())
     # return console_handler
 
+
 class LoggingLevels(Enum):
     """Enum for logging levels."""
 
@@ -86,6 +89,7 @@ class LoggingLevels(Enum):
     INFO = logging.INFO
     DEBUG = logging.DEBUG
     CRITICAL = logging.CRITICAL
+
 
 def get_logging_level() -> LoggingLevels:
     """Get logging level from the env variable.
@@ -100,6 +104,7 @@ def get_logging_level() -> LoggingLevels:
             f"Verbosity must be one of {list(LoggingLevels.__members__.keys())}"
         )
     return LoggingLevels[verbosity]
+
 
 def get_logger(logger_name: str) -> logging.Logger:
     """Main function to get logger name,.
@@ -119,7 +124,9 @@ def get_logger(logger_name: str) -> logging.Logger:
     logger.propagate = False
     return logger
 
+
 logger = get_logger(__name__)
+
 
 def port_available(port: int) -> bool:
     """Checks if a local port is available.
@@ -137,6 +144,7 @@ def port_available(port: int) -> bool:
 
     return True
 
+
 def find_available_port() -> int:
     """Finds a local random unoccupied TCP port.
     Returns:
@@ -147,6 +155,7 @@ def find_available_port() -> int:
         _, port = s.getsockname()
 
     return cast(int, port)
+
 
 def scan_for_available_port(
     start: int = SCAN_PORT_RANGE[0], stop: int = SCAN_PORT_RANGE[1]
@@ -169,7 +178,9 @@ def scan_for_available_port(
     )
     return None
 
-scan_for_available_port(8001,9000)
+
+scan_for_available_port(8001, 9000)
+
 
 def port_is_open(hostname: str, port: int) -> bool:
     """Check if a TCP port is open on a remote host.
@@ -184,7 +195,5 @@ def port_is_open(hostname: str, port: int) -> bool:
             result = sock.connect_ex((hostname, port))
             return result == 0
     except socket.error as e:
-        logger.debug(
-            f"Error checking TCP port {port} on host {hostname}: {str(e)}"
-        )
+        logger.debug(f"Error checking TCP port {port} on host {hostname}: {str(e)}")
         return False

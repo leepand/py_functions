@@ -8,8 +8,12 @@ import shutil
 from datetime import datetime
 
 __all__ = [
-    'set_dir', 'get_dir', 'set_level', 'auto_set_dir', 'add_stdout_handler',
-    'remove_handler'
+    "set_dir",
+    "get_dir",
+    "set_level",
+    "auto_set_dir",
+    "add_stdout_handler",
+    "remove_handler",
 ]
 
 # globals: logger file and directory:
@@ -19,7 +23,7 @@ _FILE_HANDLER = None
 
 def _makedirs(dirname):
     assert dirname is not None
-    if dirname == '' or os.path.isdir(dirname):
+    if dirname == "" or os.path.isdir(dirname):
         return
     try:
         os.makedirs(dirname)
@@ -29,37 +33,40 @@ def _makedirs(dirname):
 
 
 def _get_time_str():
-    return datetime.now().strftime('%m%d-%H%M%S')
+    return datetime.now().strftime("%m%d-%H%M%S")
 
 
 class _Formatter(logging.Formatter):
     def format(self, record):
-        msg = '%(message)s'
+        msg = "%(message)s"
         if record.levelno == logging.WARNING:
             date = colored(
-                '[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]',
-                'yellow')
-            fmt = date + ' ' + colored(
-                'WRN', 'yellow', attrs=['blink']) + ' ' + msg
+                "[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]", "yellow"
+            )
+            fmt = date + " " + colored("WRN", "yellow", attrs=["blink"]) + " " + msg
         elif record.levelno == logging.ERROR or record.levelno == logging.CRITICAL:
             date = colored(
-                '[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]', 'red')
-            fmt = date + ' ' + colored(
-                'WRN', 'yellow', attrs=['blink']) + ' ' + msg
-            fmt = date + ' ' + colored(
-                'ERR', 'red', attrs=['blink', 'underline']) + ' ' + msg
+                "[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]", "red"
+            )
+            fmt = date + " " + colored("WRN", "yellow", attrs=["blink"]) + " " + msg
+            fmt = (
+                date
+                + " "
+                + colored("ERR", "red", attrs=["blink", "underline"])
+                + " "
+                + msg
+            )
         elif record.levelno == logging.DEBUG:
             date = colored(
-                '[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]',
-                'blue')
-            fmt = date + ' ' + colored(
-                'DEBUG', 'blue', attrs=['blink']) + ' ' + msg
+                "[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]", "blue"
+            )
+            fmt = date + " " + colored("DEBUG", "blue", attrs=["blink"]) + " " + msg
         else:
             date = colored(
-                '[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]',
-                'green')
-            fmt = date + ' ' + msg
-        if hasattr(self, '_style'):
+                "[%(asctime)s %(threadName)s @%(filename)s:%(lineno)d]", "green"
+            )
+            fmt = date + " " + msg
+        if hasattr(self, "_style"):
             # Python3 compatibility
             self._style._fmt = fmt
         self._fmt = fmt
@@ -67,26 +74,32 @@ class _Formatter(logging.Formatter):
 
 
 def _getlogger():
-    logger = logging.getLogger('PARL')
+    logger = logging.getLogger("PARL")
     logger.propagate = False
     logger.setLevel(logging.DEBUG)
 
-    if 'DEBUG' in os.environ:
-        handler = logging.FileHandler('parl_debug.log')
-        handler.setFormatter(_Formatter(datefmt='%m-%d %H:%M:%S'))
+    if "DEBUG" in os.environ:
+        handler = logging.FileHandler("parl_debug.log")
+        handler.setFormatter(_Formatter(datefmt="%m-%d %H:%M:%S"))
         logger.addHandler(handler)
         return logger
 
     handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(_Formatter(datefmt='%m-%d %H:%M:%S'))
+    handler.setFormatter(_Formatter(datefmt="%m-%d %H:%M:%S"))
     logger.addHandler(handler)
     return logger
 
 
 _logger = _getlogger()
 _LOGGING_METHOD = [
-    'info', 'warning', 'error', 'critical', 'warn', 'exception', 'debug',
-    'setLevel'
+    "info",
+    "warning",
+    "error",
+    "critical",
+    "warn",
+    "exception",
+    "debug",
+    "setLevel",
 ]
 
 # export logger functions
@@ -95,7 +108,7 @@ for func in _LOGGING_METHOD:
     __all__.append(func)
 
 # export Level information
-_LOGGING_LEVEL = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
+_LOGGING_LEVEL = ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 for level in _LOGGING_LEVEL:
     locals()[level] = getattr(logging, level)
     __all__.append(level)
@@ -108,8 +121,8 @@ def _set_file(path):
             os.remove(path)
         except OSError:
             pass
-    hdl = logging.FileHandler(filename=path, encoding='utf-8', mode='w')
-    hdl.setFormatter(_Formatter(datefmt='%m-%d %H:%M:%S'))
+    hdl = logging.FileHandler(filename=path, encoding="utf-8", mode="w")
+    hdl.setFormatter(_Formatter(datefmt="%m-%d %H:%M:%S"))
 
     _FILE_HANDLER = hdl
     _logger.addHandler(hdl)
@@ -134,7 +147,7 @@ def set_dir(dirname):
     shutil.rmtree(dirname, ignore_errors=True)
     _makedirs(dirname)
     LOG_DIR = dirname
-    _set_file(os.path.join(dirname, 'log.log'))
+    _set_file(os.path.join(dirname, "log.log"))
 
 
 def auto_set_dir(action=None):
@@ -154,12 +167,12 @@ def auto_set_dir(action=None):
     Returns:
         dirname(str): log directory used in the global logging directory.
     """
-    mod = sys.modules['__main__']
-    if hasattr(mod, '__file__'):
+    mod = sys.modules["__main__"]
+    if hasattr(mod, "__file__"):
         basename = os.path.basename(mod.__file__)
     else:
-        basename = ''
-    dirname = os.path.join('train_log', basename[:basename.rfind('.')])
+        basename = ""
+    dirname = os.path.join("train_log", basename[: basename.rfind(".")])
     dirname = os.path.normpath(dirname)
 
     global LOG_DIR, _FILE_HANDLER
@@ -171,33 +184,43 @@ def auto_set_dir(action=None):
     def dir_nonempty(dirname):
         # If directory exists and nonempty (ignore hidden files), prompt for action
         return os.path.isdir(dirname) and len(
-            [x for x in os.listdir(dirname) if x[0] != '.'])
+            [x for x in os.listdir(dirname) if x[0] != "."]
+        )
 
     if dir_nonempty(dirname):
         if not action:
-            _logger.warning("""\
-Log directory {} exists! Use 'd' to delete it. """.format(dirname))
-            _logger.warning("""\
+            _logger.warning(
+                """\
+Log directory {} exists! Use 'd' to delete it. """.format(
+                    dirname
+                )
+            )
+            _logger.warning(
+                """\
 If you're resuming from a previous run, you can choose to keep it.
-Press any other key to exit. """)
+Press any other key to exit. """
+            )
         while not action:
-            action = input("Select Action: k (keep) / d (delete) / q (quit):"
-                           ).lower().strip()
+            action = (
+                input("Select Action: k (keep) / d (delete) / q (quit):")
+                .lower()
+                .strip()
+            )
         act = action
-        if act == 'd':
+        if act == "d":
             shutil.rmtree(dirname, ignore_errors=True)
             if dir_nonempty(dirname):
                 shutil.rmtree(dirname, ignore_errors=False)
-        elif act == 'n':
+        elif act == "n":
             dirname = dirname + _get_time_str()
             info("Use a new log directory {}".format(dirname))  # noqa: F821
-        elif act == 'k':
+        elif act == "k":
             pass
         else:
             raise OSError("Directory {} exits!".format(dirname))
     LOG_DIR = dirname
     _makedirs(dirname)
-    _set_file(os.path.join(dirname, 'log.log'))
+    _set_file(os.path.join(dirname, "log.log"))
     return dirname
 
 
@@ -208,7 +231,7 @@ def get_dir():
 def add_stdout_handler():
     global _logger
     handler = logging.StreamHandler(sys.stdout)
-    handler.setFormatter(_Formatter(datefmt='%m-%d %H:%M:%S'))
+    handler.setFormatter(_Formatter(datefmt="%m-%d %H:%M:%S"))
     _logger.addHandler(handler)
     return handler
 
@@ -220,7 +243,6 @@ def remove_handler(handler):
 
 # Will save log to log_dir/main_file_name/log.log by default
 
-mod = sys.modules['__main__']
-if hasattr(mod, '__file__') and 'XPARL' not in os.environ:
-    _logger.info("Argv: " + ' '.join(sys.argv))
-
+mod = sys.modules["__main__"]
+if hasattr(mod, "__file__") and "XPARL" not in os.environ:
+    _logger.info("Argv: " + " ".join(sys.argv))

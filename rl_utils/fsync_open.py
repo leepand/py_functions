@@ -22,6 +22,7 @@ from typing import (
     Union,
 )
 
+
 @contextlib.contextmanager
 def fsync_open(
     path: Union[pathlib.Path, str], mode: str = "w", encoding: Optional[str] = None
@@ -35,7 +36,7 @@ def fsync_open(
 
         f.flush()
         os.fsync(f.fileno())
-        
+
+
 with fsync_open("fsync_open.txt", "w") as file:
     file.write("data")
-

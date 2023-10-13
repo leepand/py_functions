@@ -10,14 +10,15 @@ import re
 
 
 class IndexCallable(object):
-    """ Provide getitem syntax for functions
+    """Provide getitem syntax for functions
     >>> def inc(x):
     ...     return x + 1
     >>> I = IndexCallable(inc)
     >>> I[3]
     4
     """
-    __slots__ = 'fn',
+
+    __slots__ = ("fn",)
 
     def __init__(self, fn):
         self.fn = fn
@@ -45,14 +46,14 @@ def reverse_dict(d):
     result = {}
     for key in d:
         for val in d[key]:
-            result[val] = result.get(val, tuple()) + (key, )
+            result[val] = result.get(val, tuple()) + (key,)
     return result
 
 
 # Taken from theano/theano/gof/sched.py
 # Avoids licensing issues because this was written by Matthew Rocklin
 def _toposort(edges):
-    """ Topological sort algorithm by Kahn [1] - O(nodes + vertices)
+    """Topological sort algorithm by Kahn [1] - O(nodes + vertices)
     inputs:
         edges - a dict of the form {a: {b, c}} where b and c depend on a
     outputs:
@@ -85,7 +86,7 @@ def _toposort(edges):
 # Taken from toolz
 # Avoids licensing issues because this version was authored by Matthew Rocklin
 def groupby(func, seq):
-    """ Group a collection by a key function
+    """Group a collection by a key function
     >>> names = ['Alice', 'Bob', 'Charlie', 'Dan', 'Edith', 'Frank']
     >>> groupby(len, names) # doctest: +SKIP
     {3: ['Bob', 'Dan'], 5: ['Alice', 'Edith', 'Frank'], 7: ['Charlie']}
@@ -106,5 +107,4 @@ def groupby(func, seq):
 
 
 def isidentifier(s):
-    return (keyword.iskeyword(s) or
-            re.match(r'^[_a-zA-Z][_a-zA-Z0-9]*$', s) is not None)
+    return keyword.iskeyword(s) or re.match(r"^[_a-zA-Z][_a-zA-Z0-9]*$", s) is not None

@@ -1,4 +1,6 @@
 level = 0
+
+
 def trace(f):
     def g(*args):
         global level
@@ -18,8 +20,12 @@ def trace(f):
         level -= 1
 
         return result
+
     return g
+
+
 from functools import wraps
+
 
 def catch_algolink_exception(func):
     @wraps(func)
@@ -27,8 +33,9 @@ def catch_algolink_exception(func):
         try:
             return func(*args, **kwargs)
         except Exception as e:
-            #response = Response(mimetype='application/json')
-            #response.set_data(e.serialize_as_json())
-            #response.status_code = e.get_http_status_code()
+            # response = Response(mimetype='application/json')
+            # response.set_data(e.serialize_as_json())
+            # response.status_code = e.get_http_status_code()
             return e
+
     return wrapper
